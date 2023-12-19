@@ -1,0 +1,11 @@
+{
+    "name": "JUL",
+    "description": "Julia during the creation of the tattoo",
+    "image": "ipfs://bafybeiau47fajkcjbqo2dpnrjf5arqqzmcvdbftm4ci2kjraevsowrquki/",
+    "attributes": [
+        {
+            "trait_type": "cuteness",
+            "value": 100
+        }
+    ]
+}
