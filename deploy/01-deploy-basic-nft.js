@@ -5,7 +5,7 @@ const { verify } = require("../utils/verify")
 const CONTRACT_NAME = "BasicNFT"
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
-    const { deploy, log } = deployments
+    const { deploy } = deployments
     const { deployer } = await getNamedAccounts()
 
     const args = []
@@ -16,10 +16,7 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
         waitConfirmations: network.config.blockConfirmations || 1,
     })
 
-    if (
-        !developmentChains.includes(network.name) &&
-        process.env.ETHERSCAN_API_KEY
-    ) {
+    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
         await verify(basicNft.address, args)
     }
 }

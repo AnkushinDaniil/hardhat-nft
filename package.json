@@ -33,5 +33,9 @@
         "coverage": "yarn hardhat coverage",
         "prettier": "prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
         "lint:prettier": "prettier --list-different --plugin=prettier-plugin-solidity 'contracts/**/*.sol'"
+    },
+    "dependencies": {
+        "mime": "^4.0.1",
+        "nft.storage": "^7.1.1"
     }
 }
