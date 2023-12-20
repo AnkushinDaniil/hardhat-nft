@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.23;
+pragma solidity ^0.8.19;
 
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
@@ -53,6 +53,7 @@ contract RandomIpfsNFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         i_callbackGasLimit = callbackGasLimit;
         s_dogTokenUris = dogTokenUris;
         i_mintFee = mintFee;
+        s_tokenCounter = 0;
     }
 
     function requestNft() public payable returns (uint256 requestId) {
@@ -75,6 +76,7 @@ contract RandomIpfsNFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         uint256 newTokenId = s_tokenCounter;
         uint256 moddedRng = randomWords[0] % MAX_CHANCE_VAUE;
         Breed dogBreed = getBreedFromModdedRng(moddedRng);
+        s_tokenCounter++;
         _safeMint(dogOwner, newTokenId);
         _setTokenURI(newTokenId, s_dogTokenUris[uint256(dogBreed)]);
         emit NftMinted(dogBreed, dogOwner);

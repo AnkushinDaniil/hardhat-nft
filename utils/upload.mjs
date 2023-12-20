@@ -38,10 +38,9 @@ async function storeNFTs(imagesPath) {
             image,
             name: dogName,
             description: `An adorable ${dogName}`,
-            // Currently doesn't support attributes 😔
-            // attributes: [{ trait_type: "cuteness", value: 100 }],
+            attributes: [{ trait_type: "cuteness", value: 100 }],
         })
-        responses.push(response)
+        responses.push(response.url)
     }
     return responses
 }

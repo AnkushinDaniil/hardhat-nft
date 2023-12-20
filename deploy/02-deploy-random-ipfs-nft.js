@@ -12,9 +12,15 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
 
     let vrfCoordinatorV2Address, subId, tokenUris
 
-    await import("../utils/upload.mjs").then(async (upload) => {
-        tokenUris = await upload.storeNFTs(imagesPath)
-    })
+    if (networkConfig[chainId].uploadToNftStorage) {
+        tokenUris = await handleTokenUris(imagesPath)
+    } else {
+        tokenUris = [
+            "ipfs://bafyreibjcbsbr5fzduajeajg262kgvoudkdtqx6qi3la37mpzdi7rybbe4/metadata.json",
+            "ipfs://bafyreiawa5q6idc7sd7pfwjkplagxtpun6ot25yked2iboagcktw75y72y/metadata.json",
+            "ipfs://bafyreia2jr7f5ryfhqdaj4or3btmybc5rx3f4fitd54ztq52ycd5oxhjwq/metadata.json",
+        ]
+    }
 
     if (developmentChains.includes(network.name)) {
         vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
@@ -22,6 +28,7 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
         const tx = await vrfCoordinatorV2Mock.createSubscription()
         const txReceipt = await tx.wait(1)
         subId = txReceipt.logs[0].args.subId
+        await vrfCoordinatorV2Mock.fundSubscription(subId, networkConfig[chainId].fundAmount)
     } else {
         vrfCoordinatorV2Address = networkConfig[chainId].vrfCoordinatorV2
         subId = networkConfig[chainId].subId
@@ -32,14 +39,35 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
         subId,
         networkConfig[chainId].gasLane,
         networkConfig[chainId].callbackGasLimit,
-        imagesPath,
+        tokenUris,
         networkConfig[chainId].mintFee,
         deployer,
     ]
 
-    // if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-    //     await verify(basicNft.address, args)
-    // }
+    const randomIpfsNft = await deploy("RandomIpfsNFT", {
+        from: deployer,
+        args: args,
+        log: true,
+        waitConfirmations: network.config.blockConfirmations || 1,
+    })
+
+    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+        await verify(randomIpfsNft.address, args)
+    }
+}
+
+async function handleTokenUris(imagesPath) {
+    console.log("Uploading the images to nft.storage...")
+    try {
+        let tokenUris
+        await import("../utils/upload.mjs").then(async (upload) => {
+            tokenUris = await upload.storeNFTs(imagesPath)
+        })
+        console.log("The images were successfully uploaded")
+        return tokenUris
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 module.exports.tags = ["all", "randomipfs", "main"]

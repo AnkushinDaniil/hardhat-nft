@@ -27,4 +27,4 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     }
 }
 
-module.exports.tags = ["all", "randomipfs", "mocks"]
+module.exports.tags = ["all", "mocks"]
