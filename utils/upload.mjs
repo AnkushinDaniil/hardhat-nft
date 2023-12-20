@@ -1,45 +1,11 @@
-// Import the NFTStorage class and File constructor from the 'nft.storage' package
 import { NFTStorage, File } from "nft.storage"
-
-// The 'mime' npm package helps us set the correct file type on our File objects
 import mime from "mime"
-
-// The 'fs' builtin module on Node.js provides access to the file system
 import fs from "fs"
-
-// The 'path' module provides helpers for manipulating filesystem paths
 import path from "path"
-
 import "dotenv/config.js"
 
 // Paste your NFT.Storage API key into the quotes:
 const NFT_STORAGE_KEY = process.env.NFT_STORAGE_KEY
-
-/**
- * Reads an image file from `imagePath` and stores an NFT with the given name and description.
- * @param {string} imagePath the path to an image file
- * @param {string} name a name for the NFT
- * @param {string} description a text description for the NFT
- */
-async function storeNFTs(imagesPath) {
-    const fullImagesPath = path.resolve(imagesPath)
-    const files = fs.readdirSync(fullImagesPath)
-    let responses = []
-    for (fileIndex in files) {
-        const image = await fileFromPath(`${fullImagesPath}/${files[fileIndex]}`)
-        const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY })
-        const dogName = files[fileIndex].replace(".png", "")
-        const response = await nftstorage.store({
-            image,
-            name: dogName,
-            description: `An adorable ${dogName}`,
-            // Currently doesn't support attributes 😔
-            // attributes: [{ trait_type: "cuteness", value: 100 }],
-        })
-        responses.push(response)
-    }
-    return responses
-}
 
 /**
  * A helper to read a file from a location on disk and return a File object.
@@ -54,6 +20,28 @@ async function fileFromPath(filePath) {
     return new File([content], path.basename(filePath), { type })
 }
 
-module.exports = {
-    storeNFTs,
+export /**
+ * Reads an image file from `imagePath` and stores an NFT with the given name and description.
+ * @param {string} imagePath the path to an image file
+ * @param {string} name a name for the NFT
+ * @param {string} description a text description for the NFT
+ */
+async function storeNFTs(imagesPath) {
+    const fullImagesPath = path.resolve(imagesPath)
+    const files = fs.readdirSync(fullImagesPath)
+    let responses = []
+    for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+        const image = await fileFromPath(`${fullImagesPath}/${files[fileIndex]}`)
+        const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY })
+        const dogName = files[fileIndex].replace(".png", "")
+        const response = await nftstorage.store({
+            image,
+            name: dogName,
+            description: `An adorable ${dogName}`,
+            // Currently doesn't support attributes 😔
+            // attributes: [{ trait_type: "cuteness", value: 100 }],
+        })
+        responses.push(response)
+    }
+    return responses
 }

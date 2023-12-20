@@ -1,12 +1,10 @@
 const { network, ethers } = require("hardhat")
 const { networkConfig, developmentChains } = require("../helper-hardhat-config")
 const { verify } = require("../utils/verify")
-// const { storeNFTs } = require("../utils/upload.mjs")
-import storeNFTs from "../utils/upload.mjs"
 
-const CONTRACT_NAME = "RandomIpfsNFT"
+// const CONTRACT_NAME = "RandomIpfsNFT"
 const chainId = network.config.chainId
-const imagesPath = "../images/randomNFT"
+const imagesPath = "./images/randomNFT/"
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
     const { deploy } = deployments
@@ -14,12 +12,13 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
 
     let vrfCoordinatorV2Address, subId, tokenUris
 
-    tokenUris = storeNFTs()
+    await import("../utils/upload.mjs").then(async (upload) => {
+        tokenUris = await upload.storeNFTs(imagesPath)
+    })
 
     if (developmentChains.includes(network.name)) {
-        const VRFCoordinatorV2Mock = await ethers.getContractFactory("VRFCoordinatorV2Mock")
-        vrfCoordinatorV2Mock = await VRFCoordinatorV2Mock.deploy()
-        vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address
+        vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
+        vrfCoordinatorV2Address = await vrfCoordinatorV2Mock.getAddress()
         const tx = await vrfCoordinatorV2Mock.createSubscription()
         const txReceipt = await tx.wait(1)
         subId = txReceipt.logs[0].args.subId
@@ -38,9 +37,9 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
         deployer,
     ]
 
-    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-        await verify(basicNft.address, args)
-    }
+    // if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+    //     await verify(basicNft.address, args)
+    // }
 }
 
 module.exports.tags = ["all", "randomipfs", "main"]
