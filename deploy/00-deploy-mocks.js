@@ -4,7 +4,7 @@ const { network, ethers } = require("hardhat")
 const BASE_FEE = ethers.parseEther("0.25")
 const GAS_PRICE_LINK = 1e9
 const DECIMALS = "18"
-const INITIAL_PRICE = "200000000000000000000"
+const INITIAL_PRICE = ethers.parseEther("200")
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
     const { deploy, log } = deployments

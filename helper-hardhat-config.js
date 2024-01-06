@@ -22,6 +22,7 @@ const networkConfig = {
         callbackGasLimit: "500000",
         uploadToNftStorage: UPLOAD_TO_NFT_STORAGE == "true",
         fundAmount: ethers.parseEther("10"),
+        ethUsdPriceFeed: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
     },
 }
 
