@@ -1,13 +1,34 @@
-# Sample Hardhat Project
+# hardhat-nft
+hardhat-nft is a project enabling users to mint simple, random IPFS and dynamic SVG NFTs. Created using [random generator oracle](https://vrf.chain.link/).
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
+## Installation
+```bash
+git clone https://github.com/AnkushinDaniil/hardhat-nft.git
+yarn install
 ```
+
+## Testing
+localhost:
+```bash
+hh test
+```
+sepolia:
+```bash
+hh test --network sepolia
+```
+
+## Node
+localhost:
+```bash
+hh node
+```
+
+## Contributing
+
+Pull requests are welcome. For significant changes, please open an issue initially to discuss what alterations you plan to make.
+
+Kindly ensure to update tests as needed.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
